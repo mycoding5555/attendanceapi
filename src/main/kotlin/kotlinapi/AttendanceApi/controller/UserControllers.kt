@@ -9,12 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping
 
 @RestController
 @RequestMapping("/users")
-class UserControllers {
+class UserControllers(private val service: kotlinapi.AttendanceApi.services.userService) {
 
-    private val service = userService()
     @GetMapping
-
-    fun getUsers(): List<User> {
-        return service.getusers()
-    }
+    fun getUsers(): List<User> = service.getusers()
 }

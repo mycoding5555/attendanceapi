@@ -6,13 +6,10 @@ import kotlinapi.AttendanceApi.model.User
 
 
 @Service
-class userService {
-
- private val repository = UserRepository()
+class userService(private val repository: UserRepository) {
 
     fun getusers(): List<User> {
-        return repository.getusers()
+        return repository.getUsers()
     }
-
 
 }
