@@ -40,7 +40,22 @@ class UserControllers(private val service: kotlinapi.AttendanceApi.services.user
 
     @PutMapping("/{id}")
     fun updateUser(@PathVariable id: Int, @RequestBody user: User): ResponseEntity<Void> {
-        val updated = service.updateUser(id, user)
+        // If password provided, hash it before updating. If empty, preserve existing password.
+        val existing = service.getUser(id)
+        if (existing == null) {
+            return ResponseEntity.notFound().build()
+        }
+
+        val newPassword = if (user.password.isNotBlank()) {
+            // hash incoming password
+            org.mindrot.jbcrypt.BCrypt.hashpw(user.password, org.mindrot.jbcrypt.BCrypt.gensalt())
+        } else {
+            // preserve existing password
+            existing.password
+        }
+
+        val toUpdate = user.copy(password = newPassword)
+        val updated = service.updateUser(id, toUpdate)
         return if (updated) ResponseEntity.noContent().build() else ResponseEntity.notFound().build()
     }
 

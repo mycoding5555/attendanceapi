@@ -1,20 +1,21 @@
--- Seed users: use explicit columns (no id) so AUTOINCREMENT handles ids.
--- INSERT OR IGNORE is used so running the seed multiple times won't create duplicates
--- because the `email` column is UNIQUE in the schema.
 
-INSERT OR IGNORE INTO users (name, email, password) VALUES ('Alice', 'alice@example.com', 'secret');
-INSERT OR IGNORE INTO users (name, email, password) VALUES ('Bob', 'bob@example.com', 'password1');
-INSERT OR IGNORE INTO users (name, email, password) VALUES ('Carol', 'carol@example.com', 'password2');
-INSERT OR IGNORE INTO users (name, email, password) VALUES ('David', 'david@example.com', 'password3');
-INSERT OR IGNORE INTO users (name, email, password) VALUES ('Eve', 'eve@example.com', 'password4');
-INSERT OR IGNORE INTO users (name, email, password) VALUES ('Frank', 'frank@example.com', 'password5');
-INSERT OR IGNORE INTO users (name, email, password) VALUES ('Grace', 'grace@example.com', 'password6');
-INSERT OR IGNORE INTO users (name, email, password) VALUES ('Heidi', 'heidi@example.com', 'password7');
-INSERT OR IGNORE INTO users (name, email, password) VALUES ('Ivan', 'ivan@example.com', 'password8');
-INSERT OR IGNORE INTO users (name, email, password) VALUES ('Judy', 'judy@example.com', 'password9');
-INSERT OR IGNORE INTO users (name, email, password) VALUES ('Mallory', 'mallory@example.com', 'password10');
+-- Seed users: use UPSERT so running the seed updates existing rows when email conflicts.
+-- This ensures edits to this file are applied on application startup.
 
--- seed students
-INSERT OR IGNORE INTO students (name, email) VALUES ('Student A', 'studenta@example.com');
-INSERT OR IGNORE INTO students (name, email) VALUES ('Student B', 'studentb@example.com');
-INSERT OR IGNORE INTO students (name, email) VALUES ('Student C', 'studentc@example.com');
+
+INSERT INTO users (name, email, password) VALUES ('Alice', 'alice@example.com', '$2a$10$/8ZvPnxQiTN0jT.AepSj1uclXBkJ4rHMgxpYqf9eZnwFGr3AWrYNu')
+	ON CONFLICT(email) DO UPDATE SET name=excluded.name, password=excluded.password;
+
+
+INSERT INTO users (name, email, password) VALUES ('moniodom', 'moniodom@example.com', '$2a$10$L7xbBE4UU3RWcgsvPvJjJ.suG39gAbG4Pu8bMvhklRk0WukiTV4GG')
+	ON CONFLICT(email) DO UPDATE SET name=excluded.name, password=excluded.password;
+
+-- seed students (update name when email conflicts)
+INSERT INTO students (name, email) VALUES ('Student A', 'studenta@example.com')
+	ON CONFLICT(email) DO UPDATE SET name=excluded.name;
+
+INSERT INTO students (name, email) VALUES ('Student B', 'studentb@example.com')
+	ON CONFLICT(email) DO UPDATE SET name=excluded.name;
+
+INSERT INTO students (name, email) VALUES ('Student C', 'studentc@example.com')
+	ON CONFLICT(email) DO UPDATE SET name=excluded.name;
