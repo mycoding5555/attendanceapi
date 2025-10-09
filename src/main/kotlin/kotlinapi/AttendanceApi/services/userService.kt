@@ -8,8 +8,14 @@ import kotlinapi.AttendanceApi.model.User
 @Service
 class userService(private val repository: UserRepository) {
 
-    fun getusers(): List<User> {
-        return repository.getUsers()
-    }
+    fun getUsers(): List<User> = repository.getUsers()
+
+    fun getUser(id: Int): User? = repository.getUserById(id)
+
+    fun createUser(user: User): User = repository.createUser(user)
+
+    fun updateUser(id: Int, user: User): Boolean = repository.updateUser(id, user)
+
+    fun deleteUser(id: Int): Boolean = repository.deleteUser(id)
 
 }
